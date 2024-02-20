@@ -3,6 +3,8 @@ version: 0.2
 phases:
     pre_build:
         commands:
+            - echo Installing JQ...
+            - sudo apt-get install -y jq
             - echo Logging in to Amazon ECR...
             - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REGISTRY_URI
             - REPOSITORY_URI=$REGISTRY_URI/prime-api
@@ -19,11 +21,19 @@ phases:
             - echo Build completed on `date`
             - echo Pushing the Docker image....
             - docker push $IMAGE_URI
-            - echo Updating Container Definition File...
-            - sed -i "s|<%IMAGE_URI%>|$IMAGE_URI|g" containerdefinition.json
-            - aws ecs register-task-definition --family prime-api-task-definition --container-definitions file://containerdefinition.json
-            - TASK_DEFINITION_ARN=$(aws ecs describe-task-definition --task-definition prime-api-task-definition  --query 'taskDefinition.taskDefinitionArn' --output text)
+            #- echo Updating Container Definition File...
+            #- sed -i "s|<%IMAGE_URI%>|$IMAGE_URI|g" containerdefinition.json
+            #- aws ecs register-task-definition --family prime-api-task-definition --container-definitions file://containerdefinition.json
+            #- TASK_DEFINITION_ARN=$(aws ecs describe-task-definition --task-definition prime-api-task-definition  --query 'taskDefinition.taskDefinitionArn' --output text)
+            #- sed -i "s|<%TASK_DEFINITION_ARN%>|$TASK_DEFINITION_ARN|g" appspec.yml
+            - echo Fetching Service Task Defintion ARN...
+            - $TASK_DEF_ARN=$(aws ecs describe-services --cluster prime-api-cluster --services prime-api-service --query 'services[0].taskDefinition' --output text)
+            - aws ecs describe-task-definition --task-definition $TASK_DEF_ARN > taskdefinition.json
+            - jq '.taskDefinition.containerDefinitions[0].image = "$IMAGE_URI"' taskdefinition.json > new_taskdefinition.json
+            - aws ecs register-task-definition --cli-input-json file://new_taskdefinition.json
+            - TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition prime-api-task-definition  --query 'taskDefinition.taskDefinitionArn' --output text)
             - sed -i "s|<%TASK_DEFINITION_ARN%>|$TASK_DEFINITION_ARN|g" appspec.yml
+            - cat appspec.yml
 
 artifacts:
     files: appspec.yml
