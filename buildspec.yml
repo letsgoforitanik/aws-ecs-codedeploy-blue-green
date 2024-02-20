@@ -18,8 +18,8 @@ phases:
             - echo Build completed on `date`
             - echo Pushing the Docker image...
             - docker push $REPOSITORY_URI:$COMMIT_HASH
-            - echo Writing image definitions file...
-            - printf '[{"name":"prime-api-container","imageUri":"%s"}]' $REPOSITORY_URI:$COMMIT_HASH > imagedefinitions.json
+            - TASK_DEFINITION_ARN=$(aws ecs describe-services --cluster prime-api-cluster --services prime-api-service --query 'services[*].taskDefinition' --output text)
+            - echo $TASK_DEFINITION_ARN
 
 artifacts:
-    files: imagedefinitions.json
+    files: appspec.yml
