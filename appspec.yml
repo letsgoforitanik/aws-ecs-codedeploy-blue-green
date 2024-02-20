@@ -3,7 +3,7 @@ Resources:
     - TargetService:
           Type: AWS::ECS::Service
           Properties:
-              TaskDefinition: arn:aws:ecs:ap-south-1:297436977708:task-definition/prime-api-task-definition:6
+              TaskDefinition: <%TASK_DEFINITION_ARN%>
               LoadBalancerInfo:
                   ContainerName: prime-api-container
                   ContainerPort: 3000
