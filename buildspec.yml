@@ -29,8 +29,8 @@ phases:
             - echo Fetching Service Task Defintion ARN...
             - TASK_DEF_ARN=$(aws ecs describe-services --cluster prime-api-cluster --services prime-api-service --query 'services[0].taskDefinition' --output text)
             - aws ecs describe-task-definition --task-definition $TASK_DEF_ARN > taskdefinition.json
-            - cat taskdefinition.json | jq '.taskDefinition.containerDefinitions[0].image = "$IMAGE_URI"' > taskdefinition.json
-            - aws ecs register-task-definition --family prime-api-task-definition --region ap-south-1 --cli-input-json file://taskdefinition.json
+            - jq '.taskDefinition.containerDefinitions[0].image = "$IMAGE_URI"' taskdefinition.json > new_taskdefinition.json
+            - aws ecs register-task-definition --family prime-api-task-definition --region ap-south-1 --cli-input-json file://new_taskdefinition.json
             - TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition prime-api-task-definition  --query 'taskDefinition.taskDefinitionArn' --output text)
             - sed -i "s|<%TASK_DEFINITION_ARN%>|$TASK_DEFINITION_ARN|g" appspec.yml
             - cat appspec.yml
