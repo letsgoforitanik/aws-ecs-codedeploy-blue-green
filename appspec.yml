@@ -1,14 +1,9 @@
 version: 0.0
-
-os: linux
-
-files:
-    - source: /
-      destination: /home/ubuntu/app
-
-file_exists_behavior: OVERWRITE
-
-hooks:
-    ValidateService:
-        - location: scripts/after-install.sh
-          runas: ubuntu
+Resources:
+    - TargetService:
+          Type: AWS::ECS::Service
+          Properties:
+              TaskDefinition: arn:aws:ecs:ap-south-1:297436977708:task-definition/prime-api-task-definition:6
+              LoadBalancerInfo:
+                  ContainerName: prime-api-container
+                  ContainerPort: 3000
