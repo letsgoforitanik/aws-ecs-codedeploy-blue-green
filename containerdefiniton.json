@@ -1,0 +1,27 @@
+[
+    {
+        "name": "prime-api-container",
+        "image": "<%IMAGE_URI%>",
+        "portMappings": [
+            {
+                "name": "http-server-port",
+                "containerPort": 3000,
+                "hostPort": 3000,
+                "protocol": "tcp",
+                "appProtocol": "http"
+            }
+        ],
+        "essential": true,
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-create-group": "true",
+                "awslogs-group": "/ecs/prime-api-task-definition",
+                "awslogs-region": "ap-south-1",
+                "awslogs-stream-prefix": "ecs"
+            },
+            "secretOptions": []
+        },
+        "memory": 400
+    }
+]
