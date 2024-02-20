@@ -19,9 +19,9 @@ app.get('/fib/:num', (req, res) => {
     return res.send(`Fibonacci(${num}) number is ${answer}`);
 });
 
-app.get('/author', (req, res) => res.send(`Authored by Aniruddha Banerjee`));
+app.get('/author', (req, res) => res.send(`Authored by Aniruddha Banerjee v3`));
 
-app.get('/', (req, res) => res.send(`Hello from host ${os.hostname()} | Aniruddha Banerjee v2`));
+app.get('/', (req, res) => res.send(`Hello from host ${os.hostname()} | Aniruddha Banerjee v3`));
 
 const server = http.createServer(app);
 server.listen(3000, () => console.log(`Server is listening on port 3000`));
