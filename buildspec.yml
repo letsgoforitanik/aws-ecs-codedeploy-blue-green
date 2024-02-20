@@ -18,8 +18,12 @@ phases:
             - echo Build completed on `date`
             - echo Pushing the Docker image...
             - docker push $REPOSITORY_URI:$COMMIT_HASH
-            - TASK_DEFINITION_ARN=$(aws ecs describe-services --cluster prime-api-cluster --services prime-api-service --query 'services[*].taskDefinition' --output text)
-            - echo $TASK_DEFINITION_ARN
+            - echo Writing Task Definition file...
+            - printf '[{"name":"prime-api-container","image":"%s","memory":1024}]' $REPOSITORY_URI:$COMMIT_HASH > taskdefinition.json
+            - aws ecs register-task-definition --family prime-api-task-definition --container-definitions file://taskdefinition.json
+            - TASK_DEFINITION_ARN=$(aws ecs describe-task-definition --task-definition prime-api-task-definition  --query 'taskDefinition.taskDefinitionArn' --output text)
+            - sed -i "s|<%TASK_DEFINITION_ARN%>|$TASK_DEFINITION_ARN|g" appspec.yml
+            - cat appspec.yml
 
 artifacts:
     files: appspec.yml
