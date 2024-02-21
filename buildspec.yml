@@ -12,14 +12,14 @@ phases:
             - IMAGE_URI=$REPOSITORY_URI:$COMMIT_HASH
     build:
         commands:
-            - echo Build started on `date`
-            - echo Building the Docker image...
+            - echo Build Started on `date`
+            - echo Building Docker Image...
             - docker build -t prime-api:latest .
             - docker tag prime-api:latest $IMAGE_URI
     post_build:
         commands:
-            - echo Build completed on `date`
-            - echo Pushing the Docker image....
+            - echo Build Completed on `date`
+            - echo Pushing Docker Image...
             - docker push $IMAGE_URI
             - echo Fetching Service Task Defintion ARN...
             - TASK_DEF_ARN=$(aws ecs describe-services --cluster prime-api-cluster --services prime-api-service --query 'services[0].taskDefinition' --output text)
