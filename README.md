@@ -1,4 +1,4 @@
-# ECS Service Blue/Green Deployment using CodePipeline
+# ECS Blue/Green Deployment using CodePipeline
 
 ## How to setup everything
 
