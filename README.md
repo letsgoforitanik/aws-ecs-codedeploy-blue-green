@@ -1,6 +1,6 @@
 # ECS (Blue/Green) Deployment using CodePipeline
 
-### How to setup everything
+## How to setup everything
 
 -   Go to ECS and create a cluster. For infrastructure choose fargate
 -   Create a task definition. Create a service based on this task definition
@@ -27,3 +27,11 @@
 -   At the start of Deploy stage, the deployment group receives the appspec.yml file and updates the service based on specified task definiion arn
 -   CodeDeploy creates a replacement task set, and registers the targets in the second target group
 -   Finally, CodeDeploy points the load balancer to this second target group and kills the original task set
+
+### Before
+
+![Initial State of Service](https://github.com/letsgoforitanik/aws-ecs-codedeploy-blue-green/blob/master/before.png)
+
+### After
+
+![Service State after Deployment](https://github.com/letsgoforitanik/aws-ecs-codedeploy-blue-green/blob/master/after.png)
